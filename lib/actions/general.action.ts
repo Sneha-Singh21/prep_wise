@@ -123,3 +123,28 @@ export async function getFeedbackByInterviewId(
   return { id: feedbackDoc.id, ...feedbackDoc.data() } as Feedback;
 }
 
+export async function deleteInterview(interviewId: string, userId: string) {
+  try {
+    const interviewRef = db.collection("interviews").doc(interviewId);
+    const interviewDoc = await interviewRef.get();
+
+    if (!interviewDoc.exists) {
+      return { success: false, message: "Interview not found" };
+    }
+
+    const interviewData = interviewDoc.data();
+
+    // Check if the logged-in user created this interview
+    if (interviewData?.userId !== userId) {
+      return { success: false, message: "You are not authorized to delete this interview" };
+    }
+
+    // Delete the interview
+    await interviewRef.delete();
+
+    return { success: true, message: "Interview deleted successfully" };
+  } catch (error) {
+    console.error("Error deleting interview:", error);
+    return { success: false, message: "Error deleting interview" };
+  }
+}
