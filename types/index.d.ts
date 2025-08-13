@@ -97,3 +97,8 @@ interface InterviewFormProps {
 interface TechIconProps {
   techStack: string[];
 }
+
+interface DeleteInterviewButtonProps {
+  interviewId: string;
+  userId: string; // current logged-in user id
+}

@@ -1,16 +1,13 @@
-"use client"; // needed for button click handling
-
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { Button } from "./ui/button";
 import DisplayTechIcons from "./DisplayTechIcons";
 
 import { cn, getRandomInterviewCover } from "@/lib/utils";
-import { getFeedbackByInterviewId, deleteInterview } from "@/lib/actions/general.action";
+import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
+import DeleteInterviewButton from "./DeleteInterviewButton";
 
 const InterviewCard = async ({
   id,
@@ -19,11 +16,7 @@ const InterviewCard = async ({
   type,
   techstack,
   createdAt,
-  currentUserId, // ✅ pass this from parent page
-}: InterviewCardProps & { currentUserId?: string }) => {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
+}: InterviewCardProps) => {
   const feedback =
     userId && id
       ? await getFeedbackByInterviewId({
@@ -31,18 +24,6 @@ const InterviewCard = async ({
           userId,
         })
       : null;
-
-  const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this interview?")) return;
-    setLoading(true);
-    const res = await deleteInterview(id, userId);
-    if (res.success) {
-      router.refresh();
-    } else {
-      alert(res.message || "Error deleting interview");
-    }
-    setLoading(false);
-  };
 
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
 
@@ -108,32 +89,21 @@ const InterviewCard = async ({
           </p>
         </div>
 
-        <div className="flex flex-row justify-between gap-2">
+        <div className="flex flex-row justify-between">
           <DisplayTechIcons techStack={techstack} />
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
+            <DeleteInterviewButton interviewId={id} userId={userId} />
+
             <Button className="btn-primary">
               <Link
                 href={
-                  feedback
-                    ? `/interview/${id}/feedback`
-                    : `/interview/${id}`
+                  feedback ? `/interview/${id}/feedback` : `/interview/${id}`
                 }
               >
                 {feedback ? "Check Feedback" : "View Interview"}
               </Link>
             </Button>
-
-            {/* ✅ Only show Delete if current user is creator */}
-            {currentUserId === userId && (
-              <Button
-                variant="destructive"
-                onClick={handleDelete}
-                disabled={loading}
-              >
-                {loading ? "Deleting..." : "Delete"}
-              </Button>
-            )}
           </div>
         </div>
       </div>
