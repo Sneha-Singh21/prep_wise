@@ -10,7 +10,7 @@ import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 import DeleteInterviewButton from "./DeleteInterviewButton";
 
 const InterviewCard = async ({
-  id,
+  interviewId,
   userId,
   role,
   type,
@@ -18,13 +18,14 @@ const InterviewCard = async ({
   createdAt,
 }: InterviewCardProps) => {
   const feedback =
-    userId && id
+    userId && interviewId
       ? await getFeedbackByInterviewId({
-          interviewId: id,
+          interviewId,
           userId,
         })
       : null;
 
+      
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
 
   const badgeColor =
@@ -93,12 +94,12 @@ const InterviewCard = async ({
           <DisplayTechIcons techStack={techstack} />
 
           <div className="flex gap-1.5">
-            <DeleteInterviewButton interviewId={id} userId={userId} />
+            <DeleteInterviewButton interviewId={interviewId} userId={userId} />
 
             <Button className="btn-primary">
               <Link
                 href={
-                  feedback ? `/interview/${id}/feedback` : `/interview/${id}`
+                  feedback ? `/interview/${interviewId}/feedback` : `/interview/${interviewId}`
                 }
               >
                 {feedback ? "Check Feedback" : "View Interview"}
