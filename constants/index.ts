@@ -112,7 +112,7 @@ export const interviewer: CreateAssistantDTO = {
     voiceId: "sarah",
     stability: 0.4,
     similarityBoost: 0.8,
-    speed: 0.8,
+    speed: 0.9,
     style: 0.5,
     useSpeakerBoost: true,
   },
@@ -154,11 +154,8 @@ End the conversation on a polite and positive note.
       },
     ],
   },
-
-  // ✅ Fix: Add required properties
-  clientMessages: [],
-  serverMessages: [],
 };
+
 
 export const feedbackSchema = z.object({
   totalScore: z.number(),
